@@ -910,8 +910,10 @@ void GifDecoder<maxGifWidth, maxGifHeight, lzwMaxBits>::
           (disposalMethod == DISPOSAL_BACKGROUND) ? -1 : transparentColorIndex;
       ;
       if (drawLineCallback) {
+#if defined(USE_PALETTE565)
         (*drawLineCallback)(xofs, line + tbiImageY, imageBuf + xofs, wid,
                             palette565, skip);
+#endif
       } else if (drawPixelCallback) {
         for (int x = 0; x < wid; x++) {
           uint8_t pixel = imageBuf[x + xofs];
