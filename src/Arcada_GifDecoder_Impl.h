@@ -900,8 +900,10 @@ void GifDecoder<maxGifWidth, maxGifHeight, lzwMaxBits>::
       //            maxGifWidth : 0; int ofs = tbiImageX - align; uint8_t *dst =
       //            (ofs < 0) ? imageBuf : imageBuf + ofs; align = (ofs < 0) ?
       //            -ofs : 0; int align = 0;
-      int len = lzw_decode(imageBuf + tbiImageX, tbiWidth,
-                           imageBuf + maxGifWidth - 1); //, align);
+      lzw_decode(imageBuf + tbiImageX, tbiWidth,
+                           imageBuf + maxGifWidth); //, align);
+      //int len = lzw_decode(imageBuf + tbiImageX, tbiWidth,
+      //                     imageBuf + maxGifWidth); //, align);
       // if (len != tbiWidth)
       //    Serial.println(len);
       int xofs = (disposalMethod == DISPOSAL_BACKGROUND) ? 0 : tbiImageX;
@@ -910,8 +912,10 @@ void GifDecoder<maxGifWidth, maxGifHeight, lzwMaxBits>::
           (disposalMethod == DISPOSAL_BACKGROUND) ? -1 : transparentColorIndex;
       ;
       if (drawLineCallback) {
+#if defined(USE_PALETTE565)
         (*drawLineCallback)(xofs, line + tbiImageY, imageBuf + xofs, wid,
                             palette565, skip);
+#endif
       } else if (drawPixelCallback) {
         for (int x = 0; x < wid; x++) {
           uint8_t pixel = imageBuf[x + xofs];
